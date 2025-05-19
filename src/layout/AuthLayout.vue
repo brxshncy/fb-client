@@ -1,26 +1,53 @@
 <script setup lang="ts">
-import Tabs from "@/components/ui/tabs/Tabs.vue";
-import TabsContent from "@/components/ui/tabs/TabsContent.vue";
-import TabsList from "@/components/ui/tabs/TabsList.vue";
-import TabsTrigger from "@/components/ui/tabs/TabsTrigger.vue";
-import LogIn from "@/pages/auth/log-in.vue";
+import CardDescription from "@/components/ui/card/CardDescription.vue";
+import CardHeader from "@/components/ui/card/CardHeader.vue";
+import CardTitle from "@/components/ui/card/CardTitle.vue";
+import CardFooter from "@/components/ui/card/CardFooter.vue";
+import { ref } from "vue";
+import type { AuthLayoutProps } from "@/types/props/auth-layout";
+
+const pageProps = ref<AuthLayoutProps>({
+  cardTitle: "Login",
+  cardDescription: "",
+  cardFooterHeaderText: "Don't have an account?",
+  cardFooterLink: "/auth/sign-up",
+  cardFooterLinkText: "Sign up",
+});
+
+const setPageProps = (props: AuthLayoutProps) => {
+  pageProps.value.cardTitle = props.cardTitle;
+  pageProps.value.cardDescription = props.cardDescription;
+  pageProps.value.cardFooterHeaderText = props.cardFooterHeaderText;
+  pageProps.value.cardFooterLink = props.cardFooterLink;
+  pageProps.value.cardFooterLinkText = props.cardFooterLinkText;
+};
 </script>
 
 <template>
   <div
     class="min-h-screen flex items-center justify-center bg-background/95 p-4"
   >
-    <Tabs default-value="login" class="w-[400px]">
-      <TabsList class="grid w-full grid-cols-2">
-        <TabsTrigger value="login">Login</TabsTrigger>
-        <TabsTrigger value="sign-up">Sign Up</TabsTrigger>
-      </TabsList>
-      <TabsContent value="login">
-        <RouterView />
-      </TabsContent>
-      <TabsContent value="sign-up">
-        <RouterView />
-      </TabsContent>
-    </Tabs>
+    <div class="w-full max-w-[400px] rounded-lg border bg-card p-8 shadow-lg">
+      <CardHeader>
+        <CardTitle>
+          {{ pageProps.cardTitle }}
+        </CardTitle>
+        <CardDescription>
+          {{ pageProps.cardDescription }}
+        </CardDescription>
+      </CardHeader>
+      <RouterView @setPageProps="setPageProps" />
+      <CardFooter class="flex justify-center mt-2">
+        <p class="text-sm text-gray-500">
+          {{ pageProps.cardFooterHeaderText }}
+          <RouterLink
+            :to="pageProps.cardFooterLink"
+            class="text-primary hover:underline"
+          >
+            {{ pageProps.cardFooterLinkText }}
+          </RouterLink>
+        </p>
+      </CardFooter>
+    </div>
   </div>
 </template>
